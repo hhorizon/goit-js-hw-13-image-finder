@@ -6,29 +6,48 @@ const debounce = require('lodash.debounce');
 
 const photoApiService = new PhotoApiService();
 
-refs.input.addEventListener(
+refs.searchForm.addEventListener(
     'input',
     debounce((e) => {
         onSearch(e.target.value);
-    }, 500),
+    }, 1000),
 );
-
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-refs.loadMoreBtn.setAttribute('style', 'display: none')
+refs.loadMoreBtn.setAttribute('style', 'display: none');
 
 async function onSearch(searchQuery) {
-    photoApiService.query = searchQuery;
+    if (!searchQuery.trim()) {
+        clearGalleryMarkup();
+        refs.loadMoreBtn.setAttribute('style', 'display: none')
+        return;
+    }
+
     photoApiService.resetPage();
+    photoApiService.countTotalResults();
+    photoApiService.query = searchQuery;
     const photos = await photoApiService.fetchPhotos();
+
     clearGalleryMarkup();
     appendGalleryMarkup(photos);
-    refs.loadMoreBtn.setAttribute('style', 'display: block')
+    
+    if (photoApiService.totalResults > photos.totalHits) {
+        refs.loadMoreBtn.setAttribute('style', 'display: none')
+    } else {
+        refs.loadMoreBtn.setAttribute('style', 'display: block')
+    }
 }
 
 async function onLoadMore() {
+    photoApiService.countTotalResults();
     const photos = await photoApiService.fetchPhotos();
     appendGalleryMarkup(photos);
+
+    if (photoApiService.totalResults > photos.totalHits) {
+        refs.loadMoreBtn.setAttribute('style', 'display: none')
+    } else {
+        refs.loadMoreBtn.setAttribute('style', 'display: block')
+    }
 }
 
 function appendGalleryMarkup(photos) {

@@ -4,6 +4,7 @@ export default class PhotoApiService {
     constructor() {
         this.searchQuery = '';
         this.page = 1;
+        this.totalResults = 12;
     }
 
     async fetchPhotos() {
@@ -20,6 +21,10 @@ export default class PhotoApiService {
 
     resetPage() {
         this.page = 1;
+    }
+
+    countTotalResults() {
+        this.totalResults = this.page * 12;
     }
 
     get query() {

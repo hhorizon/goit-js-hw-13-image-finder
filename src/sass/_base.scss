@@ -1,14 +1,13 @@
 .container {
   width: 1600px;
-  margin: 0 auto;
+  margin: 25px auto;
 }
 
 .button-box {
   display: flex;
   justify-content: center;
-  padding: 25px 0;
 }
 
-.button {
+.loadMoreBtn {
   height: 30px;
 }
