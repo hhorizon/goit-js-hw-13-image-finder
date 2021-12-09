@@ -1,4 +1,10 @@
-const API_KEY = '24205372-949bb2d0c3f30747cb1e355dc';
+import { refs } from './refs.js'
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';    
+const { notice, error } = require('@pnotify/core');
+
+
+
 
 export default class PhotoApiService {
     constructor() {
@@ -8,11 +14,16 @@ export default class PhotoApiService {
     }
 
     async fetchPhotos() {
-        const photos = await fetch(`https://pixabay.com/api/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${API_KEY}`);
-        const response = photos.json();
-        this.incrementPage();
-
-        return response;
+        try {
+            const data = await fetch(`${refs.API_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${refs.API_KEY}`);
+            const photoCollection = data.json();
+            this.incrementPage();
+            return photoCollection;
+        } catch(err) {
+            notice({
+                text: 'We have a problem! Please try again later'
+            });
+        }
     }
 
     incrementPage() {
